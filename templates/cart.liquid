@@ -1,0 +1,136 @@
+<div class="banner">
+	<div class="container">
+	</div>
+</div>
+<div class="container">
+
+	<div class="small-12 columns">
+		<h1 class="page-title">Shopping Cart</h1>
+	</div>
+  
+	<div class="empty-msg hidden small-12 columns">
+	  <h2>Your cart is currently empty.</h2>
+	  <h3>You can continue browsing <a href="/collections/all">here</a>.</h3>
+	</div>
+
+	{% if cart.item_count > 0 %}
+
+	<form id="cart-form" action="/cart" method="post">
+
+
+		<div class="row heading">
+			<div class="small-8 columns">
+				<h5>Item</h5>
+			</div>
+			<div class="small-4 columns">
+				<h5>Subtotal</h5>
+			</div>
+		</div>
+
+		{% for item in cart.items %}    
+
+		  {% comment %}
+			Determine the handle of the collection that was last seen for the 'continue shopping' link
+		  {% endcomment %}
+  
+		  {% if forloop.first %}
+			{% assign collection_url = item.product.collections.first.url %}
+			{% if collection_url == '/collections/frontpage' or collection_url == '' %}{% assign collection_url = '/collections/all' %}{% endif %}
+		  {% endif %}
+
+		<div class="row line-item-container">
+			<div class="small-8 columns">
+				<div class="row">
+					<div class="large-3 columns">
+							<a href="{{ item.product.url | within: collections.all }}">  
+								<img src="{{ item.product.featured_image.src | product_img_url: 'compact' }}" alt="{{ item.title | escape }}" />
+							</a>
+					</div>
+					<div class="large-9 columns">
+						<div class="row">
+							<div class="large-12 columns">
+								  <h3>
+									<a href="{{ item.product.url | within: collections.all }}">
+									{{ item.title }}
+									{% if item.product.variants.size == 1 %}
+									  {% unless item.variant.title contains 'Default' %}
+									   - {{ item.title }}
+									  {% endunless %}
+									{% endif %}
+									<span class="variant-id" style="display: none;">{{ item.variant.id }}</span>
+									</a>
+								  </h3>
+								  {% comment %}
+								  Line Item Properties
+								  {% endcomment %}
+								  {% if item.properties.size > 0 %}
+								  <p>
+									{% for p in item.properties %}
+									  {% unless p.last == blank %}
+										{{ p.first }}:
+										{% if p.last contains '/uploads/' %}
+										  <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+										{% else %}
+										  {{ p.last }}
+										{% endif %}
+										<br />
+									  {% endunless %}
+									{% endfor %}
+								  </p>
+								  {% endif %}
+							</div>
+						</div>		
+					</div>
+				</div>
+			</div>
+			<div class="small-4 columns">
+				<div class="row">
+					<div class="large-6 columns">
+						<input type="number" class="line-item-qty" name="updates[]" id="updates_{{ item.id }}" value="{{ item.quantity }}" />
+					</div>
+					<div class="large-6 columns">
+						<span class="price line-item-total">{{ item.line_price | money }}</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="large-12 columns">
+						<a class="item-remove" href="/cart/change?line={{ forloop.index }}&quantity=0">Remove</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+
+  
+	  {% comment %}
+	  	 For the checkout and update buttons to work, they need to have the name attribute set to 'checkout' and 'update', respectively (case-sensitive)
+	  {% endcomment %}
+  
+		<div class="row">
+			<div class="large-6 columns">
+				<a href="{{ collection_url }}" class="continue">Continue Shopping</a>
+			</div>
+			<div class="large-6 columns align-right">
+				<h4 class="subtotal">Subtotal <span class="cart-total-price">{{ cart.total_price | money }}</span></h4>
+				<input class="button" type="submit" name="checkout" value="Check out" />    
+				{% comment %}Paypal and Google checkout buttons{% endcomment %}
+				{% if additional_checkout_buttons %}
+				<p class="additional-checkout-buttons">
+				  {{ content_for_additional_checkout_buttons }}
+				</p>
+				{% endif %}    
+			</div>
+		</div>
+
+	</form>
+
+	{% else %}
+
+	<div>
+	  <h2>Your cart is currently empty.</h2>
+	  <h3>You can continue browsing <a href="/collections/all">here</a>.</h3>
+	</div>
+
+	{% endif %}
+	
+</div>

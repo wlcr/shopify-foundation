@@ -1,0 +1,53 @@
+	{% comment %}
+	<!-- Uncomment the next 5 lines to include a signup link in the header -->
+	<!-- {% if shop.customer_accounts_optional %}
+		<div class="large-12 columns" id="signup">
+			{{ 'Sign up' | customer_register_link }}
+		</div>
+	{% endif %} -->
+	{% endcomment %}
+
+<div id="header" data-class="sticky contain-to-grid">
+	{% comment %}
+	<!-- Uncomment the following line to include a mobile dropdown-style menu -->
+		{% include 'mobile-dropdown' %}
+	<!-- Note: use either mobile dropdown or the off-canvas nav, not both -->
+	{% endcomment %}
+
+	<div class="desktop show-for-large-up">
+		<ul class="navigation">
+	          {% for link in linklists.main-menu.links %}
+	          {% assign has_sub_menu = false %}
+	          {% assign has_sub_categories = false %}
+	          {% assign parent_link_active = false %}
+	          {% assign child_list_handle = link.title | handle %}
+	          {% if linklists[child_list_handle] and linklists[child_list_handle].links.size > 0 %}
+	            {% assign has_sub_menu = true %}
+	            {% for l in linklists[child_list_handle].links %}
+	              {% if page_title == l.title %}
+	                {% assign parent_link_active = true %}
+	              {% endif %}
+	            {% endfor %}
+	          {% elsif link.type == 'collection_link' and link.object.all_tags.size > 0 %}
+	            {% assign has_sub_categories = true %}
+	          {% endif %}
+	          {% if page.template_suffix %}
+		          {% if page.template_suffix == link.object.template_suffix %}
+		          	{% assign template_active = true %}
+		          {% endif %}
+	          {% endif %}
+
+	          <li class="nav-item{% if link.active or parent_link_active or template_active %} active{% endif %}">
+	          	{{ link.title | link_to: link.url }}	      	             
+	          </li>
+	          {% endfor %}
+
+	    </ul>			    
+		<ul class="right">
+			<li>
+				<a href="/account/login">Login</a>
+			</li>
+			<li class="menu-icon show-for-small-only toggler"><a href="#"><span></span></a></li>	
+		</ul>	    
+	</div>
+</div>

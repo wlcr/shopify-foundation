@@ -1,0 +1,29 @@
+<!-- Product Loop -->
+{% capture collection_handle %}{{ product-loop | handleize }}{% endcapture %}
+{% capture url %}{% if collection_handle != "" %}/collections/{{ product-loop }}{{ product.url }}{% else %}{{ product.url }}{% endif %}{% endcapture %}
+<li class="product-preview {{ collection.handle }} small-12 medium-6 large-3 columns clearfix">
+
+	<div>
+    	<a href="{{ product.url | within: collection }}">
+      		<img src="{% if product.images.size == 0 %} 
+    {{ 'default.gif' | asset_url}} {% else %}{{ product.featured_image | product_img_url: 'grande' }} {% endif %}" alt="{{ product.title | escape  }}" />
+    	</a>
+	</div>
+    <div class="">
+        <a href="{{ product.url | within: collection }}" class="clearfix">
+            <span class="title">{{ product.title | truncate: 100 }}</span>
+            <div class="sep"></div>        
+            <span class="price">
+                {% if product.available %}
+                    {% if product.price_varies %}
+                    <small><em>from</em></small>
+                    {% endif %}
+                    {{ product.price | money }}
+                {% else %}
+                    {{ product.price | money }} <span class="sold-out">Sold Out</span>
+                {% endif %}
+            </span>
+			{% include 'product-quick-view' %}	    
+        </a>
+  	</div>
+</li>

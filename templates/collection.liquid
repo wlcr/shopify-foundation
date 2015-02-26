@@ -1,0 +1,135 @@
+{% comment %}
+Important notes about pagination:
+- Never access collection.products before the opening paginate tag.
+- Never paginate by more than 50.
+{% endcomment %}
+
+{% paginate collection.products by 12 %}
+
+	<div class="large-row">      
+		<div class="small-12 columns">
+            <h1>
+            	{% if current_tags %}
+				{{ current_tags }}
+				{% else %}
+					{{ collection.title }}
+				{% endif %}            	
+            </h1>          
+      	</div>
+        {% if collection.description.size > 0 %}
+        <div class="rte">
+          {{ collection.description }}
+        </div>
+        {% endif %}
+
+        {% comment %}
+        Listing all tags within the current collection.
+        Shopify uses product tags to manage subcategories inside collections.
+        See 'How do I create subcategories of products?' at 
+        http://support.shopify.com/customer/portal/articles/75425 for details.
+        {% endcomment %}
+        <div class="clearfix small-12 medium-6 columns">
+            {% if collection.all_tags.size > 0 %}
+            <div>
+				<label for="filter-by">Filter by Category</label>
+			</div>	            
+            <div class="dropdown-wrapper clearfix">
+				<select id="filter-by">
+					<option value="{{ collection.url }}" 
+					{% unless current_tags %} selected="selected"{% endunless %}>All {{ collection.title }}              	
+					</option>
+					{% for tag in collection.all_tags %}
+					{% unless tag == 'Featured' %} 
+					<option value="{{ collection.url }}/{{ tag | handle }}" {% if current_tags contains tag%} selected="selected" {% endif %}>
+						{{ tag  }}
+					</option>
+				{% endunless %}
+				{% endfor %}  
+				</select>
+            </div>
+            {% endif %}        
+        </div>
+        <div class="filter-sort clearfix small-12 medium-6 columns">
+			<div>
+				<label for="sort-by">Sort by</label> 	
+			</div>
+            <div class="dropdown-wrapper clearfix">
+				<select id="sort-by">
+					<option value="manual">Featured</option>
+					<option value="price-ascending">Price: Low to High</option>
+					<option value="price-descending">Price: High to Low</option>
+					<option value="title-ascending">A-Z</option>
+					<option value="title-descending">Z-A</option>
+					<option value="created-ascending">Oldest to Newest</option>
+					<option value="created-descending">Newest to Oldest</option>
+					<option value="best-selling">Best Selling</option>
+				</select>
+			</div>
+		</div>
+		<script>
+			Shopify.queryParams = {};
+			if (location.search.length) {
+			  for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
+			    aKeyValue = aCouples[i].split('=');
+			    if (aKeyValue.length > 1) {
+			      Shopify.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
+			    }
+			  }
+			}
+			jQuery('#sort-by')
+			  .val('{{ collection.sort_by | default: collection.default_sort_by  }}')
+			  .bind('change', function() {
+			    Shopify.queryParams.sort_by = jQuery(this).val();
+			    location.search = jQuery.param(Shopify.queryParams).replace(/\+/g, '%20');
+			  });
+		</script>         
+    
+	    <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
+	        {% for product in collection.products %}
+	      
+	<!-- Bold Apps: Premium Options --> {% if product.metafields.inventory.ShappifyHidden == "true" %}{% else %}      
+	      
+	            {% include 'product-loop' %}
+	        {% else %}
+	            <li>
+	                <p>There are no products in this view.</p>
+	            </li>
+	      
+	{% endif %}      
+	      
+	        {% endfor %}
+	    </ul>
+    </div><!-- .large-row -->
+  	<div class="row">
+      
+      	<div class="small-12 columns">
+        
+            {% if paginate.pages > 1 %}
+                <div class="pagination-centered">
+                    <ul class="pagination">
+                        <li class="">
+                            {% if paginate.previous %}
+                                {{ "Previous" | link_to: paginate.previous.url }}
+                            {% endif %}
+                        </li>
+                        {% for part in paginate.parts %}
+                            {% if part.is_link %}
+                                <li>{{ part.title | link_to: part.url }}</li>
+                            {% else %}
+                                <li class="current"><a href>{{ part.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <li class="">
+                            {% if paginate.next %}
+                                {{ "Next" | link_to: paginate.next.url }}
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+          
+      	</div>
+      
+  	</div>
+
+{% endpaginate %}

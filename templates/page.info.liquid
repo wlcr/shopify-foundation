@@ -1,0 +1,21 @@
+{% comment %}
+Re-use the 'rte' class wherever you output content that was added by a merchant using
+the Rich Text Editor ( 'rte' stands for rich text editor ).
+Style all HTML elements in that content the same way across the board.
+Use the 'rte' class in your CSS to help maintain that consistency.
+Example: the h2 element should have the same size and color in:
+- product descriptions
+- collection descriptions
+- 'page' pages' content
+- blog post
+Read more about the contact page concepts at http://docs.shopify.com/manual/configuration/store-customization/add-a-contact-form
+{% endcomment %}
+
+<div class="small-12 columns" id="pagination">
+	<h1>{{ page.title }}</h1>
+	<div class="content rte">
+		{{ page.content }}
+	</div>
+
+	</div>
+</div>

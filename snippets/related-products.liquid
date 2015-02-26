@@ -1,0 +1,62 @@
+{% assign number_of_related_products_to_show = 3 %}
+{% assign heading = 'Related Products' %}
+{% assign number_of_related_products_to_fetch = number_of_related_products_to_show | plus: 1 %}
+ 
+{% if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' %}
+{% assign found_a_collection = false %}
+{% for c in product.collections %}
+	{% if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 %}
+		{% assign found_a_collection = true %}
+		{% assign collection = c %}
+	{% endif %}
+{% endfor %}
+{% endif %}
+ 
+{% if collection and collection.products_count > 1 %}
+	<h2>{{ heading }}</h2>
+	<div class="row">
+	{% assign current_product = product %}
+	{% assign current_product_found = false %}
+		{% for product in collection.products limit: number_of_related_products_to_fetch %}
+      
+<!-- Bold Apps: Premium Options --> {% if product.metafields.inventory.ShappifyHidden == "true" %}{% else %}      
+      
+			{% if product.handle == current_product.handle %}
+				{% assign current_product_found = true %}
+			{% else %}
+			{% unless current_product_found == false and forloop.last %}
+				<div class="product-preview small-12 columns ">
+  
+					<div class="product-preview-image-div">
+				    	<a href="{{ product.url | within: collection }}">
+				      		<img src="{% if product.images.size == 0 %} 
+				    {{ 'default.gif' | asset_url}} {% else %}{{ product.featured_image | product_img_url: 'grande' }} {% endif %}" alt="{{ product.title | escape  }}" />
+				    	</a>
+					</div>
+				  
+				    <div class="details-wrapper">
+				        <a href="{{ product.url | within: collection }}" class="preview-details clearfix">
+				            <span class="title">{{ product.title | truncate: 100 }}</span>
+				            <div class="sep"></div>        
+				            <span class="price">
+				                {% if product.available %}
+				                    {% if product.price_varies %}
+				                    <small><em>from</em></small>
+				                    {% endif %}
+				                    {{ product.price | money }}
+				                {% else %}
+				                    {{ product.price | money }} <span class="sold-out">Sold Out</span>
+				                {% endif %}
+				            </span>
+							{% include 'product-quick-view' %}	    
+				        </a>
+				  	</div>
+				</div>
+			{% endunless %}
+			{% endif %}
+      
+{% endif %}      
+      
+		{% endfor %}
+	</div>
+{% endif %}

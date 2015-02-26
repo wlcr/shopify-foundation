@@ -1,0 +1,67 @@
+<div data-options="disable_for_touch:true" title="{{ product.title }} Quick View" class="quick-view">
+    <a href="#" data-reveal-id="myModal{{ product.url | within: collection | replace: '/', '-' }}">
+        <div class="icon-plus">
+        	<span></span>
+        </div>
+    </a>
+</div>
+
+<div id="myModal{{ product.url | within: collection | replace: '/', '-' }}" class="reveal-modal expand" style="position:fixed;" data-reveal>
+  	<form method="post" action="/cart/add" enctype="multipart/form-data">
+      	<div class="row">
+      		<div class="modal-logo hide-for-large-up"></div>
+            <div class="large-6 columns">
+            
+			  <!-- for product image zoom - use the #id sets here for different behaviour - we add the stripped product URL to give it a unique ID -->
+				<script>
+					$(document).ready(function(){
+						$('#zoom{{ product.url | within: collection | replace: '/', '-' }}').zoom();
+						$('#grab{{ product.url | within: collection | replace: '/', '-' }}').zoom({ on:'grab' });
+						$('#click{{ product.url | within: collection | replace: '/', '-' }}').zoom({ on:'click' });			 
+						$('#toggle{{ product.url | within: collection | replace: '/', '-' }}').zoom({ on:'toggle' });
+					});
+				</script>
+                
+                <div id="zoom{{ product.url | within: collection | replace: '/', '-' }}">
+                	<img src="{{ product.featured_image | product_img_url: 'master' }}" alt="{{ product.title | escape  }}" />
+                </div>
+                	
+            </div>
+            <div class="large-6 columns">
+            	<div class="modal-logo show-for-large-up"></div>
+                <h2 itemprop="name">{{ product.title }}</h2>               
+                {% assign hide_default_title = false %}
+                {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+                    {% assign hide_default_title = true %}
+                {% endif %}       
+                
+                <div class="product-variants dropdown-wrapper {% if hide_default_title %} hidden{% endif %}">
+                    <select class="product-select" name="id">
+                    {% for variant in product.variants %}
+                        <option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price | money }}</option>
+                    {% endfor %}
+                    </select>
+                </div>  
+                <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+                        {% if product.available %}
+                        <link itemprop="availability" href="http://schema.org/InStock" />
+                        {% else %}
+                        <link itemprop="availability" href="http://schema.org/OutOfStock" />
+                        {% endif %}
+                        <h5>
+                            {% if product.compare_at_price > product.price %}
+                            <span class="price" itemprop="price">{{ product.price | money }}</span>&nbsp;<s class="sale-price">{{ product.compare_at_price_max | money }}</s>
+                            {% else %}
+                            <span class="price" itemprop="price">{{ product.price | money }}</span>
+                            {% endif %}
+                        </h5>
+                </div>
+                <div class="text-center"><a href="{{ product.url}}">See full details</a></div>
+                <input class="button add" type="submit" name="add" id="add" value="Add to cart">
+    
+            </div>
+      	</div>
+    </form>
+    <a class="close-reveal-modal"></a>
+</div>

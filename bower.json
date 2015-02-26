@@ -1,0 +1,21 @@
+{
+  "name": "wlcr_shopify_theme",
+  "version": "0.0.1",
+  "authors": [
+    "WLCR <info@wlcr.io>"
+  ],
+  "description": "Shopify Starter Theme",
+  "license": "GPLv2",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "foundation": "~5.4.0",
+    "slick.js": "~1.3.15"
+  }
+}

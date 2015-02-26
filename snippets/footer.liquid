@@ -1,0 +1,25 @@
+<div class="row footer-nav">
+	<div class="large-12 columns">
+		<nav>		
+			<ul class="">
+                {% for link in linklists.footer.links %}
+                    <li>{{ link.title | link_to: link.url }}</li>
+                {% endfor %}
+			</ul>
+		</nav>
+	</div>
+</div>
+<footer class="row">
+	<div class="small-12 columns">
+		<hr>
+		<div class="row">
+			<div class="small-12 columns">
+              <p><small>Website by <a href="https://wlcr.io">WLCR</a> | A Digital Studio</small></p>
+			</div>
+			<div class="small-12 columns">
+              <p><small>&copy; Copyright {{ "now" | date: "%Y" }} {{ shop.name }}</small></p>
+			</div>
+		</div>
+      	<br />
+	</div>
+</footer>

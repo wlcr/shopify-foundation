@@ -38,6 +38,7 @@
 	{{ 'custom.css' | asset_url | stylesheet_tag }}
   
   	{{ 'jquery.js' | asset_url | script_tag }}
+  	{{ 'foundation.min.js' | asset_url | script_tag }}
   	{{ 'slick.min.js' | asset_url | script_tag }}
   	{{ 'plugins.js' | asset_url | script_tag }}
   	{{ 'main.js' | asset_url | script_tag }}
@@ -126,13 +127,10 @@
   	<!-- End Include Footer Content -->
   		{% include 'offcanvas-close' %}
   	<!-- Scripts -->
-  		<!-- Foundation scripts -->
-		<script src="//cdn.jsdelivr.net/foundation/5.3.3/js/foundation.min.js"></script>
-
 		<!-- Product Image JS by @lukebussey -->
 		{{ 'productimages.js' | asset_url | script_tag }}
       
-        <!-- Let's add a product zoom becaue Foundation doesn't have one. Thank's to Jack Moore! -->
+        <!-- Let's add a product zoom becaue Foundation doesn't have one. Thanks to Jack Moore! -->
         {{ 'jquery.zoom.js' | asset_url | script_tag }}
   
 </body>

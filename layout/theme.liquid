@@ -27,15 +27,11 @@
 	{{ content_for_header }}
   
   	<!-- CSS -->
-  	<script src="//use.typekit.net/lgw4wil.js"></script>
-	<script>try{Typekit.load();}catch(e){}</script>
 	{{ 'normalize.css' | asset_url | stylesheet_tag }}
 	{{ 'foundation.css' | asset_url | stylesheet_tag }}
 	{{ 'style.css' | asset_url | stylesheet_tag }}
 	{{ 'foundation-icons.css' | asset_url | stylesheet_tag }}
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-	
-	{{ 'custom.css' | asset_url | stylesheet_tag }}
   
   	{{ 'jquery.js' | asset_url | script_tag }}
   	{{ 'foundation.min.js' | asset_url | script_tag }}
